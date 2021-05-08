@@ -8,6 +8,8 @@ namespace TechMeCookServer.Services
 {
     public class HttpClientService : IHttpClientService
     {
+        public String apiKey = "bee92de871cb4b05ac3b51de0cd576c2";
+
         private HttpClient client;
         public HttpClient GetHttpClient()
         {
@@ -17,6 +19,11 @@ namespace TechMeCookServer.Services
                 client.BaseAddress = new Uri("https://api.spoonacular.com/");
             }
             return client;
+        }
+
+        public String GetApiKey()
+        {
+            return apiKey;
         }
     }
 }

@@ -16,6 +16,8 @@ namespace TechMeCookServer.Data
         {
         }
 
+        public DbSet<ApplicationUser> AppUsers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

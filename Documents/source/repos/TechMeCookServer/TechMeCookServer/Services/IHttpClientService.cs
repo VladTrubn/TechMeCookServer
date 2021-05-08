@@ -9,5 +9,6 @@ namespace TechMeCookServer.Services
     public interface IHttpClientService
     {
         HttpClient GetHttpClient();
+        String GetApiKey();
     }
 }

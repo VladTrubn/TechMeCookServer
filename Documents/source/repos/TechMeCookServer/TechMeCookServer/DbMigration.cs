@@ -16,6 +16,7 @@ namespace TechMeCookServer
     {
         public static IWebHost MigrateDatabase(this IWebHost webHost)
         {
+            throw new Exception($"Unable to create {ApplicationRoles.Administrators} role.");
             using (var scope = webHost.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<ApplicationDbContext>();

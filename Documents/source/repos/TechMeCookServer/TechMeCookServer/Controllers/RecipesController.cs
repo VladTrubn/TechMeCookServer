@@ -12,6 +12,7 @@ using TechMeCookServer.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 using System.Web.Http;
+using System.Net.Http.Headers;
 
 namespace TechMeCookServer.Controllers
 {
@@ -43,12 +44,13 @@ namespace TechMeCookServer.Controllers
         }
 
         [HttpGet("{recipeId}/information")]
-        public async Task<String> GetDetail(long recipeId, String apiKey)
+        public async Task<IActionResult> GetDetail(long recipeId, String apiKey)
         {
             String actualUri = string.Format(detailUriTemplate, recipeId, httpClientService.GetApiKey());
             var response = await httpClient.GetAsync(actualUri);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+            return Ok(await response.Content.ReadAsStringAsync());
             
           /*  var basereturn =  Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
@@ -61,13 +63,13 @@ namespace TechMeCookServer.Controllers
 
 
         [HttpGet("random")]
-        public async Task<String> GetRandomCollection(int? number, String? tags, String apiKey)
+        public async Task<IActionResult> GetRandomCollection(int? number, String? tags, String apiKey)
         {
             String actualUri = string.Format(randomCollectionUriTemplate, number, tags, httpClientService.GetApiKey());
-            return actualUri;
             var response = await httpClient.GetAsync(actualUri);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+            return Ok(await response.Content.ReadAsStringAsync());
         }
 
     }

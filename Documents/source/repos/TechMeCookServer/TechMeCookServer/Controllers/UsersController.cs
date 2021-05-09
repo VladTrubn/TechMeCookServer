@@ -10,12 +10,15 @@ using Microsoft.AspNetCore.Identity;
 using System.Net;
 using System.Web.Http;
 using System.Net.Http.Formatting;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 
 namespace TechMeCookServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UsersController : ApiController
+    public class UsersController : Controller
     {
         private readonly ILogger<RecipesController> logger;
         private readonly IHttpClientService httpClientService;
@@ -36,17 +39,20 @@ namespace TechMeCookServer.Controllers
             this.signInManager = signInManager;
         }
 
-        [HttpGet("login")]
-        public async Task<ApplicationUser> Login(String email, String password)
+        [HttpPost("login")]
+        public async Task<ApplicationUser> Login()
         {
+            var stream = new StreamReader(HttpContext.Request.Body);
+            var body = await stream.ReadToEndAsync();
+            var requestBody = JsonSerializer.Deserialize<LoginBody>(body);
 
-            var User = await userManager.FindByEmailAsync(email);
+            var User = await userManager.FindByEmailAsync(requestBody.email);
             if (User == null)
             {
                 throw new HttpRequestException("No such user");
             }
 
-            var result = await this.signInManager.PasswordSignInAsync(email, password, isPersistent: false, lockoutOnFailure: false);
+            var result = await this.signInManager.PasswordSignInAsync(requestBody.email, requestBody.password, isPersistent: false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
             {
@@ -56,19 +62,27 @@ namespace TechMeCookServer.Controllers
             return User;       
         }
 
-        [HttpGet("register")]
-        public async Task<ApplicationUser> Register(String username, String email, String password)
+        [HttpPost("register")]
+        public async Task<ApplicationUser> Register()
         {
-            var user = new ApplicationUser { UserName = username, Email = email };
-            var result = await this.userManager.CreateAsync(user, password);
+            var stream = new StreamReader(HttpContext.Request.Body);
+            var body = await stream.ReadToEndAsync();
+            var requestBody = JsonSerializer.Deserialize<RegisterBody>(body);
+
+            var user = new ApplicationUser { UserName = requestBody.username, Email = requestBody.email };
+            var result = await this.userManager.CreateAsync(user, requestBody.password);
+
 
             if (result.Succeeded)
             {
                 await this.signInManager.SignInAsync(user, isPersistent: false);
-                return await userManager.FindByEmailAsync(email);
+                return await userManager.FindByEmailAsync(requestBody.email);
             }
 
-            throw new HttpRequestException("Such a user already exists");
+            String errors = "";
+            foreach (var error in result.Errors)
+                errors += error.Description;
+            throw new HttpRequestException(errors);
         }
 
 

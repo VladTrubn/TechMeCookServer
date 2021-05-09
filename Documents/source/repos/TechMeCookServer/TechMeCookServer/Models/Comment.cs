@@ -14,6 +14,8 @@ namespace TechMeCookServer.Models
         public ApplicationUser Creator { get; set; }
         public DateTime Created { get; set; }
 
+        public String RecipeDbId { get; set; }
+
         [JsonIgnore]
         public Recipe Recipe { get; set; }
         

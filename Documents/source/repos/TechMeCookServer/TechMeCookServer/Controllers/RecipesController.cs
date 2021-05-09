@@ -13,12 +13,15 @@ using Microsoft.AspNetCore.Identity;
 using System.Net;
 using System.Web.Http;
 using System.Net.Http.Headers;
+using System.IO;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace TechMeCookServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RecipesController : ApiController
+    public class RecipesController : Controller
     {
         private static readonly string[] Summaries = new[]
         {
@@ -43,22 +46,64 @@ namespace TechMeCookServer.Controllers
             this.userManager = userManager;
         }
 
+        /* [HttpGet("{recipeId}/information")]
+         public async Task<IActionResult> GetDetail(long recipeId, String apiKey)
+         {
+             String actualUri = string.Format(detailUriTemplate, recipeId, httpClientService.GetApiKey());
+             var response = await httpClient.GetAsync(actualUri);
+             response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+             response.EnsureSuccessStatusCode();
+             return Ok(await response.Content.ReadAsStringAsync());
+
+            var basereturn =  Enumerable.Range(1, 5).Select(index => new WeatherForecast
+             {
+                 Date = DateTime.Now.AddDays(index),
+                 TemperatureC = rng.Next(-20, 55),
+                 Summary = Summaries[rng.Next(Summaries.Length)]
+             }).ToArray();
+             return basereturn;
+         } */
+
         [HttpGet("{recipeId}/information")]
         public async Task<IActionResult> GetDetail(long recipeId, String apiKey)
         {
             String actualUri = string.Format(detailUriTemplate, recipeId, httpClientService.GetApiKey());
             var response = await httpClient.GetAsync(actualUri);
+
+            var responseText = await response.Content.ReadAsStringAsync();
+            var responseModel = JsonSerializer.Deserialize<Recipe>(responseText);
+
+            var recipe = await this.context.Recipes.Include(r => r.comments).SingleOrDefaultAsync(m => m.id == recipeId);
+
+
+            if (recipe == null)
+            {
+                recipe = new Recipe
+                {
+                    id = responseModel.id,
+                    spoonacularSourceUrl = responseModel.spoonacularSourceUrl,
+                    title = responseModel.title,
+                    summary = responseModel.summary,
+                    readyInMinutes = responseModel.readyInMinutes,
+                    image = responseModel.image,
+                    comments = new List<Comment>()
+                };
+                this.context.Recipes.Add(recipe);
+                await this.context.SaveChangesAsync();
+            }
+            String jsonResponse = JsonSerializer.Serialize(recipe);
+
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             response.EnsureSuccessStatusCode();
-            return Ok(await response.Content.ReadAsStringAsync());
-            
-          /*  var basereturn =  Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            }).ToArray();
-            return basereturn;*/
+            return Ok(jsonResponse);
+
+            /*  var basereturn =  Enumerable.Range(1, 5).Select(index => new WeatherForecast
+              {
+                  Date = DateTime.Now.AddDays(index),
+                  TemperatureC = rng.Next(-20, 55),
+                  Summary = Summaries[rng.Next(Summaries.Length)]
+              }).ToArray();
+              return basereturn;*/
         }
 
 

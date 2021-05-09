@@ -10,8 +10,8 @@ using TechMeCookServer.Data;
 namespace TechMeCookServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210508113728_Initial")]
-    partial class Initial
+    [Migration("20210509203305_First")]
+    partial class First
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -182,6 +182,50 @@ namespace TechMeCookServer.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("TechMeCookServer.Models.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("CreatorId");
+
+                    b.Property<Guid>("RecipeId");
+
+                    b.Property<string>("Text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("TechMeCookServer.Models.Recipe", b =>
+                {
+                    b.Property<Guid>("RId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("id");
+
+                    b.Property<string>("image");
+
+                    b.Property<int>("readyInMinutes");
+
+                    b.Property<string>("spoonacularSourceUrl");
+
+                    b.Property<string>("summary");
+
+                    b.Property<string>("title");
+
+                    b.HasKey("RId");
+
+                    b.ToTable("Recipes");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -224,6 +268,19 @@ namespace TechMeCookServer.Migrations
                     b.HasOne("TechMeCookServer.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TechMeCookServer.Models.Comment", b =>
+                {
+                    b.HasOne("TechMeCookServer.Models.ApplicationUser", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("TechMeCookServer.Models.Recipe", "Recipe")
+                        .WithMany("comments")
+                        .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

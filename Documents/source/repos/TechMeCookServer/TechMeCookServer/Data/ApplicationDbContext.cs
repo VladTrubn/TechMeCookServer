@@ -18,11 +18,16 @@ namespace TechMeCookServer.Data
 
         public DbSet<ApplicationUser> AppUsers { get; set; }
 
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-         
+            builder.Entity<Comment>().HasOne(x => x.Creator).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+
         }
     }
 }

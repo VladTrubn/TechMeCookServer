@@ -52,14 +52,14 @@ namespace TechMeCookServer.Controllers
                 throw new HttpRequestException("No such user");
             }
 
-            var result = await this.signInManager.PasswordSignInAsync(requestBody.email, requestBody.password, isPersistent: false, lockoutOnFailure: false);
+            var result = await this.signInManager.PasswordSignInAsync(User.UserName, requestBody.password, isPersistent: false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
             {
                 throw new HttpRequestException("Wrong password");
             }
 
-            return User;       
+            return User;
         }
 
         [HttpPost("register")]

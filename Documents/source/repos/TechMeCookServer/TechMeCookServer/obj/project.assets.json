@@ -7290,11 +7290,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vladt\\Documents\\source\\repos\\TechMeCookServer\\TechMeCookServer\\TechMeCookServer.csproj",
+      "projectUniqueName": "C:\\Users\\vladt\\Source\\Repos\\TechMeCookServer1\\Documents\\source\\repos\\TechMeCookServer\\TechMeCookServer\\TechMeCookServer.csproj",
       "projectName": "TechMeCookServer",
-      "projectPath": "C:\\Users\\vladt\\Documents\\source\\repos\\TechMeCookServer\\TechMeCookServer\\TechMeCookServer.csproj",
+      "projectPath": "C:\\Users\\vladt\\Source\\Repos\\TechMeCookServer1\\Documents\\source\\repos\\TechMeCookServer\\TechMeCookServer\\TechMeCookServer.csproj",
       "packagesPath": "C:\\Users\\vladt\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vladt\\Documents\\source\\repos\\TechMeCookServer\\TechMeCookServer\\obj\\",
+      "outputPath": "C:\\Users\\vladt\\Source\\Repos\\TechMeCookServer1\\Documents\\source\\repos\\TechMeCookServer\\TechMeCookServer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",

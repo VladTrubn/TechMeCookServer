@@ -5,6 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210508113728_Initial.cs" />
+    <Compile Remove="Migrations\20210508113728_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20210509195856_Second.cs" />
+    <Compile Remove="Migrations\20210509195856_Second.Designer.cs" />
+    <Compile Remove="Migrations\20210509200013_Second.cs" />
+    <Compile Remove="Migrations\20210509200013_Second.Designer.cs" />
+    <Compile Remove="Migrations\20210509202513_Third.cs" />
+    <Compile Remove="Migrations\20210509202513_Third.Designer.cs" />
+    <Compile Remove="Migrations\20210509202731_Third.cs" />
+    <Compile Remove="Migrations\20210509202731_Third.Designer.cs" />
+    <Compile Remove="Migrations\20210509202837_Thrd.cs" />
+    <Compile Remove="Migrations\20210509202837_Thrd.Designer.cs" />
+    <Compile Remove="Migrations\20210509202933_First.cs" />
+    <Compile Remove="Migrations\20210509202933_First.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.WebApiCompatShim" Version="2.2.0" />

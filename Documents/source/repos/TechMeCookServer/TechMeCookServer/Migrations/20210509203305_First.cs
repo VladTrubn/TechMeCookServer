@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TechMeCookServer.Migrations
 {
-    public partial class Initial : Migration
+    public partial class First : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,6 +45,23 @@ namespace TechMeCookServer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Recipes",
+                columns: table => new
+                {
+                    RId = table.Column<Guid>(nullable: false),
+                    id = table.Column<int>(nullable: false),
+                    spoonacularSourceUrl = table.Column<string>(nullable: true),
+                    title = table.Column<string>(nullable: true),
+                    summary = table.Column<string>(nullable: true),
+                    readyInMinutes = table.Column<int>(nullable: false),
+                    image = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recipes", x => x.RId);
                 });
 
             migrationBuilder.CreateTable(
@@ -153,6 +170,33 @@ namespace TechMeCookServer.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Text = table.Column<string>(nullable: true),
+                    CreatorId = table.Column<string>(nullable: true),
+                    Created = table.Column<DateTime>(nullable: false),
+                    RecipeId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_AspNetUsers_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comments_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "RId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -191,6 +235,16 @@ namespace TechMeCookServer.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_CreatorId",
+                table: "Comments",
+                column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_RecipeId",
+                table: "Comments",
+                column: "RecipeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -211,10 +265,16 @@ namespace TechMeCookServer.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Recipes");
         }
     }
 }

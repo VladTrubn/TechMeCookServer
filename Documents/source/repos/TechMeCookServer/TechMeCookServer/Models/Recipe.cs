@@ -18,8 +18,6 @@ namespace TechMeCookServer.Models
         public int readyInMinutes { get; set; }
         public String? image { get; set; }
 
-
-
         public ICollection<Comment> comments { get; set; }
 
 

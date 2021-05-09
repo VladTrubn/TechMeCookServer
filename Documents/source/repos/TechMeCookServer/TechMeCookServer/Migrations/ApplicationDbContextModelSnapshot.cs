@@ -189,8 +189,6 @@ namespace TechMeCookServer.Migrations
 
                     b.Property<string>("CreatorId");
 
-                    b.Property<int?>("RecipeDbId");
-
                     b.Property<Guid>("RecipeId");
 
                     b.Property<string>("Text");

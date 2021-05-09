@@ -65,18 +65,15 @@ namespace TechMeCookServer.Controllers
             var body = await stream.ReadToEndAsync();
             var requestBody = JsonSerializer.Deserialize<Comment>(body);
 
-
-
             try
             {
                 var comment = new Comment
                 {
                     Text = requestBody.Text,
-                    CreatorId = await this.userManager.GetUserIdAsync(await this.userManager.FindByEmailAsync(requestBody.CreatorId)),
+                    CreatorId = requestBody.CreatorId,
                     //Creator = await userManager.FindByIdAsync(requestBody.CreatorId),
                     Created = DateTime.UtcNow,
-                    RecipeId = this.context.Recipes.SingleOrDefault(r => r.id.ToString() == requestBody.RecipeDbId).RId,
-                    RecipeDbId = requestBody.RecipeDbId
+                    RecipeId = requestBody.RecipeId,
                     //Recipe = await this.context.Recipes.SingleOrDefaultAsync(r => r.RId == requestBody.RecipeId)
                 };
 
@@ -87,7 +84,7 @@ namespace TechMeCookServer.Controllers
             }
             catch (Exception e)
             {
-               return BadRequest();
+                return BadRequest();
             }
         }
 

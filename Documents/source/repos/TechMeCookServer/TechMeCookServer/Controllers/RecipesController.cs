@@ -36,7 +36,7 @@ namespace TechMeCookServer.Controllers
 
         private String detailUriTemplate = "recipes/{0}/information?apiKey={1}";
         private String randomCollectionUriTemplate = "recipes/random?number={0}&tags={1}&apiKey={2}";
-        private String filteredCollectionUriTemplate = "recipes/complexSearch?query={0}&includeIngredients={1}&equipment={2}&diet={3}&intolerances={4}&number={5}&apiKey={6}";
+        private String filteredCollectionUriTemplate = "recipes/complexSearch?query={0}&includeIngredients={1}&equipment={2}&diet={3}&type={4}&number={5}&apiKey={6}";
 
         public RecipesController(UserManager<ApplicationUser> userManager, ILogger<RecipesController> logger, IHttpClientService httpClientService, ApplicationDbContext context)
         {
@@ -56,7 +56,7 @@ namespace TechMeCookServer.Controllers
             var responseText = await response.Content.ReadAsStringAsync();
             var responseModel = JsonSerializer.Deserialize<Recipe>(responseText);
 
-            var recipe = await this.context.Recipes.Include(r => r.comments).SingleOrDefaultAsync(m => m.id == recipeId);
+            var recipe = await this.context.Recipes.Include(r => r.comments).Include(r=>r.extendedIngredients).Include(r=>r.analyzedInstructions).ThenInclude(i=>i.steps).SingleOrDefaultAsync(m => m.id == recipeId);
 
 
             if (recipe == null)
@@ -69,7 +69,9 @@ namespace TechMeCookServer.Controllers
                     summary = responseModel.summary,
                     readyInMinutes = responseModel.readyInMinutes,
                     image = responseModel.image,
-                    comments = new List<Comment>()
+                    comments = new List<Comment>(),
+                    analyzedInstructions = responseModel.analyzedInstructions,
+                    extendedIngredients = responseModel.extendedIngredients
                 };
                 this.context.Recipes.Add(recipe);
                 await this.context.SaveChangesAsync();
@@ -93,9 +95,9 @@ namespace TechMeCookServer.Controllers
         }
 
         [HttpGet("complexSearch")]
-        public async Task<IActionResult> GetFilteredCollection(String? query, String? includeIngredients, String? equipment, String? diet, String? intolerances, String? number, String apiKey)
+        public async Task<IActionResult> GetFilteredCollection(String? query, String? includeIngredients, String? equipment, String? diet, String? type, String? number, String apiKey)
         {
-            String actualUri = string.Format(filteredCollectionUriTemplate, query, includeIngredients, equipment,  diet, intolerances, number, httpClientService.GetApiKey());
+            String actualUri = string.Format(filteredCollectionUriTemplate, query, includeIngredients, equipment,  diet, type, number, httpClientService.GetApiKey());
             var response = await httpClient.GetAsync(actualUri);
             var responseText = await response.Content.ReadAsStringAsync();
             var responseModel = JsonSerializer.Deserialize<RecipeCollection>(responseText);

@@ -19,7 +19,8 @@ namespace TechMeCookServer.Models
         public String? image { get; set; }
 
         public ICollection<Comment> comments { get; set; }
-
+        public ICollection<Instruction> analyzedInstructions { get; set; }
+        public ICollection<Ingredient> extendedIngredients { get; set; }
 
     }
 }

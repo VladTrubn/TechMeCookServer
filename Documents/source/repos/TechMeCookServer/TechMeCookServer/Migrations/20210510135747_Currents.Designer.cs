@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TechMeCookServer.Data;
 
 namespace TechMeCookServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210510135747_Currents")]
+    partial class Currents
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,29 +204,6 @@ namespace TechMeCookServer.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("TechMeCookServer.Models.Ingredient", b =>
-                {
-                    b.Property<int>("Ingrid")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid?>("RecipeRId");
-
-                    b.Property<double>("amount");
-
-                    b.Property<string>("image");
-
-                    b.Property<string>("name");
-
-                    b.Property<string>("unit");
-
-                    b.HasKey("Ingrid");
-
-                    b.HasIndex("RecipeRId");
-
-                    b.ToTable("Ingredient");
-                });
-
             modelBuilder.Entity("TechMeCookServer.Models.Instruction", b =>
                 {
                     b.Property<int>("Id")
@@ -339,13 +318,6 @@ namespace TechMeCookServer.Migrations
                         .WithMany("comments")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("TechMeCookServer.Models.Ingredient", b =>
-                {
-                    b.HasOne("TechMeCookServer.Models.Recipe")
-                        .WithMany("extendedIngredients")
-                        .HasForeignKey("RecipeRId");
                 });
 
             modelBuilder.Entity("TechMeCookServer.Models.Instruction", b =>

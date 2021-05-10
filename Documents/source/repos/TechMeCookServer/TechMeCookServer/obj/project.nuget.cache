@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "If5o+7W4tRwYCRDvo3kgw2tvcUoG7C92GGZZ9331oYVgu1JrS9FZT8g5ws9ePxUbBIRDoXoBZKftNi22n12n0A==",
+  "dgSpecHash": "A16PaKtVn+aPft0fWcOTmx6+bufqYIs0OghNikWSvzhha5ktCkziNkSr2ffmCXp6pML061bJ8x8mC409Zv5g2g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\vladt\\Source\\Repos\\TechMeCookServer1\\Documents\\source\\repos\\TechMeCookServer\\TechMeCookServer\\TechMeCookServer.csproj",
+  "projectFilePath": "C:\\Users\\vladt\\source\\repos\\TechMeCookServer4\\Documents\\source\\repos\\TechMeCookServer\\TechMeCookServer\\TechMeCookServer.csproj",
   "expectedPackageFiles": [
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnet.webapi.client\\5.2.6\\microsoft.aspnet.webapi.client.5.2.6.nupkg.sha512",
     "C:\\Users\\vladt\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",

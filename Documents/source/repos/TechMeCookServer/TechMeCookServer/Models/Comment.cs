@@ -16,7 +16,8 @@ namespace TechMeCookServer.Models
 
         [JsonIgnore]
         public Recipe Recipe { get; set; }
-        
         public Guid RecipeId { get; set; }
+
+        public String RecipeDbId { get; set; }
     }
 }

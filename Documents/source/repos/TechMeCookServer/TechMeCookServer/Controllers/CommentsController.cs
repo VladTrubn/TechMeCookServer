@@ -65,7 +65,6 @@ namespace TechMeCookServer.Controllers
             var body = await stream.ReadToEndAsync();
             var requestBody = JsonSerializer.Deserialize<Comment>(body);
 
-            try
             {
                 var comment = new Comment
                 {
@@ -82,10 +81,6 @@ namespace TechMeCookServer.Controllers
                 this.context.Comments.Add(comment);
                 await this.context.SaveChangesAsync();
                 return CreatedAtAction(nameof(CreateComment), comment);
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
             }
         }
 

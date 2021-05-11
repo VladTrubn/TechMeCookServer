@@ -19,6 +19,12 @@
     <Compile Remove="Migrations\20210509202837_Thrd.Designer.cs" />
     <Compile Remove="Migrations\20210509202933_First.cs" />
     <Compile Remove="Migrations\20210509202933_First.Designer.cs" />
+    <Compile Remove="Migrations\20210510135747_Currents.cs" />
+    <Compile Remove="Migrations\20210510135747_Currents.Designer.cs" />
+    <Compile Remove="Migrations\20210510140729_Currentss.cs" />
+    <Compile Remove="Migrations\20210510140729_Currentss.Designer.cs" />
+    <Compile Remove="Migrations\20210510151819_Number1000.cs" />
+    <Compile Remove="Migrations\20210510151819_Number1000.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

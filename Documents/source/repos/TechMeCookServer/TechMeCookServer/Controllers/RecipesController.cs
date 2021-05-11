@@ -50,15 +50,8 @@ namespace TechMeCookServer.Controllers
         [HttpGet("{recipeId}/information")]
         public async Task<IActionResult> GetDetail(long recipeId, String apiKey)
         {
-            String actualUri = string.Format(detailUriTemplate, recipeId, httpClientService.GetApiKey());
-            var response = await httpClient.GetAsync(actualUri);
-
-            var responseText = await response.Content.ReadAsStringAsync();
-            var responseModel = JsonSerializer.Deserialize<Recipe>(responseText);
-
-            var recipe = await this.context.Recipes.Include(r => r.comments).Include(r=>r.extendedIngredients).Include(r=>r.analyzedInstructions).ThenInclude(i=>i.steps).SingleOrDefaultAsync(m => m.id == recipeId);
-
-
+            var recipe = await this.context.Recipes.Include(r => r.comments).Include(r => r.extendedIngredients).Include(r => r.analyzedInstructions).ThenInclude(i => i.steps).SingleOrDefaultAsync(m => m.id == recipeId);
+            var responseModel = new Recipe();
             if (recipe == null)
             {
                 recipe = new Recipe
@@ -75,12 +68,19 @@ namespace TechMeCookServer.Controllers
                 };
                 this.context.Recipes.Add(recipe);
                 await this.context.SaveChangesAsync();
-            }
-            String jsonResponse = JsonSerializer.Serialize(recipe);
 
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            response.EnsureSuccessStatusCode();
-            return Ok(jsonResponse);
+                String actualUri = string.Format(detailUriTemplate, recipeId, httpClientService.GetApiKey());
+                var response = await httpClient.GetAsync(actualUri);
+                response.EnsureSuccessStatusCode();
+                var responseText = await response.Content.ReadAsStringAsync();
+                responseModel = JsonSerializer.Deserialize<Recipe>(responseText);
+            }
+
+            else
+                responseModel = recipe;
+
+            recipe.comments = recipe.comments.OrderBy(c => c.Created).ToList();
+            return Ok(responseModel);
         }
 
 
@@ -89,8 +89,30 @@ namespace TechMeCookServer.Controllers
         {
             String actualUri = string.Format(randomCollectionUriTemplate, number, tags, httpClientService.GetApiKey());
             var response = await httpClient.GetAsync(actualUri);
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             response.EnsureSuccessStatusCode();
+            var responseText = await response.Content.ReadAsStringAsync();
+            var responseModel = JsonSerializer.Deserialize<RandomRecipeCollection>(responseText);
+            foreach (Recipe entry in responseModel.recipes)
+            {
+                var recipe = await this.context.Recipes.Include(r => r.comments).Include(r => r.extendedIngredients).Include(r => r.analyzedInstructions).ThenInclude(i => i.steps).SingleOrDefaultAsync(m => m.id == entry.id);
+                if (recipe == null)
+                {
+                    recipe = new Recipe
+                    {   
+                        id = entry.id,
+                        spoonacularSourceUrl = entry.spoonacularSourceUrl,
+                        title = entry.title,
+                        summary = entry.summary,
+                        readyInMinutes = entry.readyInMinutes,
+                        image = entry.image,
+                        comments = new List<Comment>(),
+                        analyzedInstructions = entry.analyzedInstructions,
+                        extendedIngredients = entry.extendedIngredients
+                    };
+                    this.context.Recipes.Add(recipe);
+                    await this.context.SaveChangesAsync();
+                }
+            }
             return Ok(await response.Content.ReadAsStringAsync());
         }
 

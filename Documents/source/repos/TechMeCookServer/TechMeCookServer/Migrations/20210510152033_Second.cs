@@ -4,10 +4,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TechMeCookServer.Migrations
 {
-    public partial class Currentss : Migration
+    public partial class Second : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "RecipeDbId",
+                table: "Comments",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Ingredient",
                 columns: table => new
@@ -41,6 +46,10 @@ namespace TechMeCookServer.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Ingredient");
+
+            migrationBuilder.DropColumn(
+                name: "RecipeDbId",
+                table: "Comments");
         }
     }
 }

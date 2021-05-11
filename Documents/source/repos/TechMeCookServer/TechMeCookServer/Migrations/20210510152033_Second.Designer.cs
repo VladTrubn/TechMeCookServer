@@ -10,8 +10,8 @@ using TechMeCookServer.Data;
 namespace TechMeCookServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210510140729_Currentss")]
-    partial class Currentss
+    [Migration("20210510152033_Second")]
+    partial class Second
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -190,6 +190,8 @@ namespace TechMeCookServer.Migrations
                     b.Property<DateTime>("Created");
 
                     b.Property<string>("CreatorId");
+
+                    b.Property<string>("RecipeDbId");
 
                     b.Property<Guid>("RecipeId");
 

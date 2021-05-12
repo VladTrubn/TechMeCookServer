@@ -20,5 +20,6 @@
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\vladt\.nuget\packages\microsoft.entityframeworkcore.tools\2.2.6</PkgMicrosoft_EntityFrameworkCore_Tools>
+    <PkgjQuery Condition=" '$(PkgjQuery)' == '' ">C:\Users\vladt\.nuget\packages\jquery\1.6.4</PkgjQuery>
   </PropertyGroup>
 </Project>

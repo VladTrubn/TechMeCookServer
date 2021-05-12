@@ -1,18 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechMeCookServer.Models;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using TechMeCookServer.Services;
 using TechMeCookServer.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Net;
 using System.Web.Http;
-using System.Net.Http.Headers;
 using System.IO;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +45,15 @@ namespace TechMeCookServer.Controllers
             }
             
             var comments = recipe.comments;
-            String jsonResponse = JsonSerializer.Serialize(comments);
+            CommentCollection commentCollection = new CommentCollection();
+
+            foreach (Comment comment in comments)
+            {
+                var user = await userManager.FindByIdAsync(comment.CreatorId);
+                comment.CreatorName = user.UserName;
+                commentCollection.comments.Add(comment);
+            }
+            String jsonResponse = JsonSerializer.Serialize(commentCollection);
 
             return Ok(jsonResponse);
             
@@ -70,11 +73,9 @@ namespace TechMeCookServer.Controllers
                 {
                     Text = requestBody.Text,
                     CreatorId = await this.userManager.GetUserIdAsync(await this.userManager.FindByEmailAsync(requestBody.CreatorId)),
-                    //Creator = await userManager.FindByIdAsync(requestBody.CreatorId),
                     Created = DateTime.UtcNow,
                     RecipeId = this.context.Recipes.SingleOrDefault(r => r.id.ToString() == requestBody.RecipeDbId).RId,
                     RecipeDbId = requestBody.RecipeDbId,
-                    //Recipe = await this.context.Recipes.SingleOrDefaultAsync(r => r.RId == requestBody.RecipeId)
                 };
 
 

@@ -19,5 +19,7 @@ namespace TechMeCookServer.Models
         public Guid RecipeId { get; set; }
 
         public String RecipeDbId { get; set; }
+
+        public String? CreatorName { get; set; }
     }
 }

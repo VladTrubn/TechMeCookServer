@@ -1,59 +1,58 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechMeCookServer.Models;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using TechMeCookServer.Services;
 using TechMeCookServer.Data;
-using Microsoft.AspNetCore.Identity;
-using System.Net;
 using System.Web.Http;
-using System.Net.Http.Headers;
-using System.IO;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
 namespace TechMeCookServer.Controllers
 {
+
+
     [ApiController]
     [Route("[controller]")]
     public class RecipesController : Controller
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
 
-        private readonly ILogger<RecipesController> logger;
         private readonly IHttpClientService httpClientService;
         private readonly HttpClient httpClient;
         private readonly ApplicationDbContext context;
-        private readonly UserManager<ApplicationUser> userManager;
 
         private String detailUriTemplate = "recipes/{0}/information?apiKey={1}";
         private String randomCollectionUriTemplate = "recipes/random?number={0}&tags={1}&apiKey={2}";
         private String filteredCollectionUriTemplate = "recipes/complexSearch?query={0}&includeIngredients={1}&equipment={2}&diet={3}&type={4}&number={5}&apiKey={6}";
 
-        public RecipesController(UserManager<ApplicationUser> userManager, ILogger<RecipesController> logger, IHttpClientService httpClientService, ApplicationDbContext context)
+        public RecipesController(IHttpClientService httpClientService, ApplicationDbContext context)
         {
-            this.logger = logger;
             this.httpClientService = httpClientService;
             this.httpClient = httpClientService.GetHttpClient();
             this.context = context;
-            this.userManager = userManager;
         }
 
         [HttpGet("{recipeId}/information")]
         public async Task<IActionResult> GetDetail(long recipeId, String apiKey)
         {
-            var recipe = await this.context.Recipes.Include(r => r.comments).Include(r => r.extendedIngredients).Include(r => r.analyzedInstructions).ThenInclude(i => i.steps).SingleOrDefaultAsync(m => m.id == recipeId);
+            var recipe = await this.context.Recipes
+                .Include(r => r.comments)
+                .Include(r => r.extendedIngredients)
+                .Include(r => r.analyzedInstructions)
+                .ThenInclude(i => i.steps)
+                .SingleOrDefaultAsync(m => m.id == recipeId);
             var responseModel = new Recipe();
             if (recipe == null)
             {
+                String actualUri = string.Format(detailUriTemplate, recipeId, httpClientService.GetApiKey());
+                var response = await httpClient.GetAsync(actualUri);
+                response.EnsureSuccessStatusCode();
+                var responseText = await response.Content.ReadAsStringAsync();
+                responseModel = JsonSerializer.Deserialize<Recipe>(responseText);
+
                 recipe = new Recipe
                 {
                     id = responseModel.id,
@@ -68,12 +67,6 @@ namespace TechMeCookServer.Controllers
                 };
                 this.context.Recipes.Add(recipe);
                 await this.context.SaveChangesAsync();
-
-                String actualUri = string.Format(detailUriTemplate, recipeId, httpClientService.GetApiKey());
-                var response = await httpClient.GetAsync(actualUri);
-                response.EnsureSuccessStatusCode();
-                var responseText = await response.Content.ReadAsStringAsync();
-                responseModel = JsonSerializer.Deserialize<Recipe>(responseText);
             }
 
             else
@@ -93,7 +86,7 @@ namespace TechMeCookServer.Controllers
             var responseText = await response.Content.ReadAsStringAsync();
             var responseModel = JsonSerializer.Deserialize<RandomRecipeCollection>(responseText);
             foreach (Recipe entry in responseModel.recipes)
-            {
+            {    
                 var recipe = await this.context.Recipes.Include(r => r.comments).Include(r => r.extendedIngredients).Include(r => r.analyzedInstructions).ThenInclude(i => i.steps).SingleOrDefaultAsync(m => m.id == entry.id);
                 if (recipe == null)
                 {

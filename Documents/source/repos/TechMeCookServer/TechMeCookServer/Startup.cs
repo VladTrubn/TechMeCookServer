@@ -8,6 +8,9 @@ using TechMeCookServer.Models;
 using TechMeCookServer.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Owin;
+using Owin;
+using TechMeCookServer.Hubs;
 
 namespace TechMeCookServer
 {
@@ -15,16 +18,20 @@ namespace TechMeCookServer
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
+        }
+        public void Configuration(IAppBuilder app)
+        {
+            app.MapSignalR();
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
+               options.UseSqlServer(this.configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllers();
 
@@ -36,6 +43,8 @@ namespace TechMeCookServer
 
             services.AddHttpClient();
             services.AddScoped<IUserPermissionsService, UserPermissionsService>();
+            services.AddMvcCore().AddRazorViewEngine();
+            services.AddSignalR();
 
         }
 
@@ -56,6 +65,7 @@ namespace TechMeCookServer
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
         }
     }

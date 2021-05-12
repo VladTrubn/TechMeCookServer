@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using TechMeCookServer.Models;
 using System.Net.Http;
-using TechMeCookServer.Services;
-using TechMeCookServer.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Net;
 using System.Web.Http;
-using System.Net.Http.Formatting;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
@@ -20,21 +15,12 @@ namespace TechMeCookServer.Controllers
     [Route("[controller]")]
     public class UsersController : Controller
     {
-        private readonly ILogger<RecipesController> logger;
-        private readonly IHttpClientService httpClientService;
-        private readonly HttpClient httpClient;
-        private readonly ApplicationDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
 
 
-        public UsersController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<RecipesController> logger, IHttpClientService httpClientService,
-           ApplicationDbContext context)
+        public UsersController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
-            this.logger = logger;
-            this.httpClientService = httpClientService;
-            this.httpClient = httpClientService.GetHttpClient();
-            this.context = context;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
